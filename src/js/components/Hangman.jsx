@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, Component } from 'react';
 import { randomWord } from '../words';
 import '../../css/Hangman.css';
 import img0 from '../../img/0.jpg';
@@ -9,6 +9,7 @@ import img4 from '../../img/4.jpg';
 import img5 from '../../img/5.jpg';
 import img6 from '../../img/6.jpg';
 import AlphaButton from './AlphaButton';
+import Axios from 'axios';
 
 class Hangman extends Component {
 	/** by default, allow 6 guesses and use provided gallows images. */
@@ -22,7 +23,7 @@ class Hangman extends Component {
 		this.state = {
 			nWrong: 0,
 			guessed: new Set(),
-			answer: randomWord()
+			answer: ''
 		};
 		this.handleGuess = this.handleGuess.bind(this);
 	}
@@ -64,11 +65,17 @@ class Hangman extends Component {
 			));
 	}
 
-	handleRestart = e => {
+	handleRestart = async e => {
+		const res = await Axios.get(
+			'https://random-word-api.herokuapp.com/word?number=1'
+		);
+		console.log(res.data[0]);
+
 		this.setState(prev => ({
+			...prev,
 			nWrong: 0,
 			guessed: new Set(),
-			answer: randomWord()
+			answer: res.data[0]
 		}));
 	};
 
@@ -106,6 +113,18 @@ class Hangman extends Component {
 			</div>
 		);
 	};
+
+	async componentDidMount() {
+		try {
+			const res = await Axios.get(
+				'https://random-word-api.herokuapp.com/word?number=1'
+			);
+			console.log(res.data[0]);
+			this.setState(prev => ({ ...prev, answer: res.data[0] }));
+		} catch (e) {
+			console.log(e);
+		}
+	}
 
 	/** render: render game */
 	render() {
