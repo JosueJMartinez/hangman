@@ -96,6 +96,7 @@ class Hangman extends Component {
     if (isWon) {
       return (
         <div>
+          hello
           <p className="Hangman-word">{this.state.answer}</p>
           <button id="restart" onClick={this.handleRestart}>
             Restart?
